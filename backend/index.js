@@ -11,7 +11,6 @@ require('dotenv').config()
 const {Server} = require("socket.io")
 const http = require ("http")
 
-const path = require("path")
 
 // & <--- Middlewares --->
 app.use(express.json())
@@ -23,21 +22,7 @@ app.use("/message", auth, messageRoute)
 const server = http.createServer(app)
 
 
-//<-------------- Deployment --------------->
-const __dirname1 = path.resolve()
-if(process.env.NODE_ENV === "production"){
 
-    app.use(express.static(path.join(__dirname1,"fronted/build")))
-    app.get("*", (req, res)=>{
-        res.sendFile(path.resolve(__dirname1, "fronted", "build", "index.html"))
-    })
-}
-else{
-    app.get("/", (req, res)=>{
-        res.send("API is running successfully")
-    })
-}
-//<-------------- Deployment --------------->
 
 server.listen(process.env.PORT, async () => {
     try {
@@ -58,7 +43,6 @@ const io = new Server(server ,{
 })
 
 io.on("connection", (socket)=>{
-
 
     socket.on("setup", (userData)=>{
         socket.join(userData._id)
